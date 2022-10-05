@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import project,Tag
 from .forms import projectForm
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def singleproject(request,pk):
@@ -16,7 +17,7 @@ def projects(request):
    
     context = {'projects': projects}
     return render(request, 'projects.html' , context)  
-
+@login_required(login_url="login")
 def createproject(request):
     form = projectForm()
     if request.method == 'POST':
@@ -26,6 +27,7 @@ def createproject(request):
             return redirect('/')
     context={'form':form}
     return render(request, 'project_form.html', context)  
+@login_required(login_url="login")    
 def updateproject(request,pk):
     projects = project.objects.get(id=pk)
     form = projectForm(instance=projects)
@@ -37,7 +39,7 @@ def updateproject(request,pk):
             return redirect('/')
     context={'form':form}
     return render(request, 'project_form.html', context)    
-
+@login_required(login_url="login")
 def deleteproject(request,pk):
     projects = project.objects.get(id=pk)
     if request.method == 'POST':
