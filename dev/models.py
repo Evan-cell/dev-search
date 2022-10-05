@@ -5,8 +5,10 @@ from turtle import title
 from django.db import models
 import uuid
 from cloudinary.models import CloudinaryField
+from users.models import Profile
 # Create your models here.
 class project(models.Model):
+    owner = models.ForeignKey(Profile, null=True, blank=True, on_delete = models.SET_NULL)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True,blank=True)
     featured_image = CloudinaryField(null=True, blank=True,default="default.jpg")

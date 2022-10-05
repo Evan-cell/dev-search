@@ -49,7 +49,7 @@
                 <img class="project__thumbnail" src="{{projo.featured_image.url}}" alt="project thumbnail" />
                 <div class="card__body">
                   <h3 class="project__title">{{projo.title}}</h3>
-                  <p><a class="project__author" href="{% url 'project' projo.id %}">By Shahriar P. Shuvo</a></p>
+                  <p><a class="project__author" href="{% url 'userprofile' projo.owner.id %}">By {{projo.owner.name}}</a></p>
                   <p class="project--rating">
                     <span style="font-weight: bold;">{{projo.vote_ratio}} votes</span> 
                     feedback
