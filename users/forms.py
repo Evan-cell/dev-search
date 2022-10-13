@@ -2,7 +2,7 @@ from cProfile import label
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile,skill
 class customUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -30,3 +30,18 @@ class Profileform(ModelForm):
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'input'})           
+
+class skillForm(ModelForm):
+    class Meta:
+        model = skill
+        fields = '__all__'
+        exclude = ['owner']
+
+    def __init__(self, *args, **kwargs):
+        super(skillForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'input'})
+        
+
+

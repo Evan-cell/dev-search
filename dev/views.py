@@ -1,3 +1,4 @@
+import profile
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import project,Tag
@@ -19,17 +20,21 @@ def projects(request):
     return render(request, 'projects.html' , context)  
 @login_required(login_url="login")
 def createproject(request):
+    profile = request.user.profile
     form = projectForm()
     if request.method == 'POST':
         form = projectForm(request.POST, request.FILES)
         if form.is_valid:
-            form.save()
+            project = form.save(commit=False)
+            project.owner = profile
+            project.save()
             return redirect('/')
     context={'form':form}
     return render(request, 'project_form.html', context)  
-@login_required(login_url="login")    
+@login_required(login_url="login")  
 def updateproject(request,pk):
-    projects = project.objects.get(id=pk)
+    profile = request.user.profile
+    projects = profile.project_set.get(id=pk)
     form = projectForm(instance=projects)
   
     if request.method == 'POST':
@@ -41,12 +46,13 @@ def updateproject(request,pk):
     return render(request, 'project_form.html', context)    
 @login_required(login_url="login")
 def deleteproject(request,pk):
-    projects = project.objects.get(id=pk)
+    profile = request.user.profile
+    projects = profile.project_set.get(id=pk)
     if request.method == 'POST':
         projects.delete()
         return redirect('/')
     context = {'object': projects}
-    return render(request, 'projects/delete-project.html', context)       
+    return render(request, 'delete_template.html', context)       
 
 
     
