@@ -1,21 +1,7 @@
 {% extends 'main.html' %}
 {% load static %}
 {% block content %}
-<!-- <h1>projects</h1>
-<table>
-    
-{% for projo in projects %}
-<tr>
 
-    
-    
-    <td><a href="{% url 'project' projo.id %}">view</a></td>
-    <td><a href="{% url 'delete-project' projo.id %}">delete</a></td>
-    <td><a href="{% url 'update-project' projo.id %}">edit</a></td>
-</tr>
-    
-{% endfor %}
-</table> -->
 <!-- Main Section -->
 <main class="projects">
     <section class="hero-section text-center">
@@ -28,7 +14,7 @@
           <form class="form" action="#" method="get">
             <div class="form__field">
               <label for="formInput#search">Search By Projects </label>
-              <input class="input input--text" id="formInput#search" type="text" name="text"
+              <input class="input input--text" id="formInput#search" type="text" name="search_query" value="{{search_query}}"
                 placeholder="Search by Project Title" />
             </div>
 

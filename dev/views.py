@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .models import project,Tag
 from .forms import projectForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 # Create your views here.
 
 def singleproject(request,pk):
@@ -14,7 +15,13 @@ def singleproject(request,pk):
     return render(request, 'projects/single-project.html', context)
 
 def projects(request):
-    projects = project.objects.all()
+    search_query = ''
+    if request.GET.get('search_query'):
+        search_query = request.GET.get('search_query')
+        print('search:',search_query)
+    projects = project.objects.distinct().filter(
+        Q(title__icontains = search_query) 
+        )
    
     context = {'projects': projects}
     return render(request, 'projects.html' , context)  

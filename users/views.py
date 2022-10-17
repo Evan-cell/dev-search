@@ -1,4 +1,5 @@
 
+from socket import SIO_KEEPALIVE_VALS
 from tkinter.tix import Form
 from django.shortcuts import render,redirect
 from django.contrib.auth import login,authenticate,logout
@@ -6,12 +7,25 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import customUserCreationForm,Profileform,skillForm
 from django.contrib.auth.decorators import login_required
-from .models import Profile
+from .models import Profile,skill
+from django.db.models import Q
 # Create your views here.
 @login_required(login_url='login')  
 def profiles(request):
-    profiles = Profile.objects.all()
-    context = {'profiles': profiles}
+    search_query = ''
+    if request.GET.get('search_query'):
+        search_query = request.GET.get('search_query')
+        print('search:', search_query)
+
+    skills = skill.objects.filter(name__icontains = search_query)
+
+    profiles = Profile.objects.distinct().filter(
+        Q(name__icontains = search_query) |
+        Q(short_intro__icontains = search_query) |
+        Q(skill__in = skills)
+
+    )
+    context = {'profiles': profiles, 'search_query':search_query}
     return render(request, 'users/profiles.html', context)
 @login_required(login_url='login')      
 def userprofile(request,pk):
