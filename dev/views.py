@@ -4,7 +4,9 @@ from django.http import HttpResponse
 from .models import project,Tag
 from .forms import projectForm
 from django.contrib.auth.decorators import login_required
+from .utils import searchProjects, paginateProjects
 from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger,EmptyPage
 # Create your views here.
 
 def singleproject(request,pk):
@@ -15,15 +17,12 @@ def singleproject(request,pk):
     return render(request, 'projects/single-project.html', context)
 
 def projects(request):
-    search_query = ''
-    if request.GET.get('search_query'):
-        search_query = request.GET.get('search_query')
-        print('search:',search_query)
-    projects = project.objects.distinct().filter(
-        Q(title__icontains = search_query) 
-        )
-   
-    context = {'projects': projects}
+    projects, search_query = searchProjects(request)
+    custom_range, projects = paginateProjects(request, projects, 6)
+
+    context = {'projects': projects,
+               'search_query': search_query, 'custom_range': custom_range}
+
     return render(request, 'projects.html' , context)  
 @login_required(login_url="login")
 def createproject(request):

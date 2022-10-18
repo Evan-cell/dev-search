@@ -21,6 +21,8 @@ class project(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.title 
+    class Meta:
+        ordering = ['-created']    
 class review(models.Model):
     VOTE_TYPE = (
         ('up', 'Up Vote'),
