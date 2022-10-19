@@ -2,7 +2,7 @@ import profile
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import project,Tag
-from .forms import projectForm
+from .forms import projectForm,reviewForm
 from django.contrib.auth.decorators import login_required
 from .utils import searchProjects, paginateProjects
 from django.db.models import Q
@@ -11,8 +11,25 @@ from django.core.paginator import Paginator, PageNotAnInteger,EmptyPage
 
 def singleproject(request,pk):
     projectobj = project.objects.get(id=pk)
+
+    form = reviewForm()
+    if request.method == 'POST':
+        form = reviewForm(request.POST)
+        review = form.save(commit=False)
+        review.project = projectobj
+        review.owner = request.user.profile
+        review.save()
+
+        projectobj .getVoteCount
+
+        return redirect('project', pk=projectobj.id)
+
+        # update vote count
+
+
+
     tags = projectobj.tags.all
-    context={'projectobj':projectobj, 'tas': tags}
+    context={'projectobj':projectobj, 'tas': tags, 'form':form}
     print('projectobj',projectobj)
     return render(request, 'projects/single-project.html', context)
 
